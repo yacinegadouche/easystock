@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EasyStock.Web/EasyStock.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EasyStock.Tests/EasyStock.Tests.csproj" />
+  </Folder>
+</Solution>
