@@ -11,12 +11,24 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString)
-           .UseSnakeCaseNamingConvention());
+           .UseSnakeCaseNamingConvention()
+           .UseAsyncSeeding(async (context, _, cancellationToken) =>
+               await DbSeeder.SeedAsync((ApplicationDbContext)context, cancellationToken))
+           .UseSeeding((context, _) =>
+
+DbSeeder.SeedAsync((ApplicationDbContext)context).GetAwaiter().GetResult()));
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<ApplicationDbContext>();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
