@@ -2,6 +2,7 @@ using EasyStock.Web.Data;
 using EasyStock.Web.Models;
 using EasyStock.Web.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using EasyStock.Web.Extensions;
 
 namespace EasyStock.Web.Services;
 
@@ -30,7 +31,7 @@ public class CategoryService(ApplicationDbContext db)
             return ServiceResult.Failure($"A category named '{name}' already exists.");
         }
 
-        db.Categories.Add(new Category { Name = name, Description = Normalize(model.Description) });
+        db.Categories.Add(new Category { Name = name, Description = model.Description.TrimToNull() });
         await db.SaveChangesAsync(cancellationToken);
         return ServiceResult.Success();
     }
@@ -52,7 +53,7 @@ public class CategoryService(ApplicationDbContext db)
         }
 
         category.Name = name;
-        category.Description = Normalize(model.Description);
+        category.Description = model.Description.TrimToNull();
         await db.SaveChangesAsync(cancellationToken);
         return ServiceResult.Success();
     }
@@ -80,7 +81,4 @@ public class CategoryService(ApplicationDbContext db)
         db.Categories.AnyAsync(
             c => c.Name.ToLower() == name.ToLower() && c.Id != excludeId,
             cancellationToken);
-
-    private static string? Normalize(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }
