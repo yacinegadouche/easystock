@@ -19,8 +19,19 @@ docker compose up -d
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" \
   "Host=localhost;Port=5432;Database=easystock;Username=easystock;Password=<your-password>" \
   --project src/EasyStock.Web
+dotnet user-secrets set "Seed:DemoPassword" "<choose-a-password>" --project src/EasyStock.Web
 dotnet run --project src/EasyStock.Web
 ```
+
+### Demo accounts
+
+| Username | Role | Access |
+|---|---|---|
+| `admin` | Admin | Everything, including user management |
+| `manager` | Manager | Inventory, history and reports |
+| `operator` | Operator | Inventory only |
+
+All demo accounts use the password set in `Seed:DemoPassword`.
 
 Health check: `GET /health`
 

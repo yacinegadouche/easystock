@@ -27,6 +27,16 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <span class="navbar-text me-3">
+                            @User.FindFirst(EasyStock.Web.Services.AuthService.FullNameClaimType)?.Value
+                            <small class="text-muted">(@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value)</small>
+                        </span>
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-flex">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">Log out</button>
+                        </form>
+                    }
                 </div>
             </div>
         </nav>

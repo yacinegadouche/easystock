@@ -1,11 +1,53 @@
 using EasyStock.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace EasyStock.Web.Data;
 
 public static class DbSeeder
 {
-    public static async Task SeedAsync(ApplicationDbContext db, CancellationToken cancellationToken = default)
+    public static async Task SeedAsync(
+        ApplicationDbContext db,
+        string? demoPassword,
+        CancellationToken cancellationToken = default)
+    {
+        await SeedReferenceDataAsync(db, cancellationToken);
+
+        if (!string.IsNullOrWhiteSpace(demoPassword))
+        {
+            await SeedUsersAsync(db, demoPassword, cancellationToken);
+        }
+    }
+
+    private static async Task SeedUsersAsync(
+        ApplicationDbContext db,
+        string demoPassword,
+        CancellationToken cancellationToken)
+    {
+        if (await db.Users.AnyAsync(cancellationToken))
+        {
+            return;
+        }
+
+        var hasher = new PasswordHasher<User>();
+
+        User[] users =
+        [
+            new() { Username = "admin", FullName = "Alex Martin", Role = UserRole.Admin, PasswordHash = "" },
+            new() { Username = "manager", FullName = "Nadia Pelletier", Role = UserRole.Manager, PasswordHash = "" },
+            new() { Username = "operator", FullName = "Samuel Fortin", Role = UserRole.Operator, PasswordHash = "" },
+        ];
+
+        foreach (var user in users)
+        {
+            user.PasswordHash = hasher.HashPassword(user, demoPassword);
+        }
+
+        db.Users.AddRange(users);
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
+    private static async Task SeedReferenceDataAsync(ApplicationDbContext db, CancellationToken cancellationToken)
     {
         if (await db.Categories.AnyAsync(cancellationToken))
         {
