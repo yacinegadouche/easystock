@@ -1,0 +1,12 @@
+@model SupplierFormViewModel
+@{
+    ViewData["Title"] = "Delete supplier";
+}
+
+<h1 class="h3 mb-3">Delete supplier</h1>
+<p>Are you sure you want to delete <strong>@Model.Name</strong>? Its items will be kept, without a supplier.</p>
+
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-link">Cancel</a>
+</form>
