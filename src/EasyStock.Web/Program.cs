@@ -9,14 +9,15 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+var demoPassword = builder.Configuration["Seed:DemoPassword"];
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString)
            .UseSnakeCaseNamingConvention()
            .UseAsyncSeeding(async (context, _, cancellationToken) =>
-               await DbSeeder.SeedAsync((ApplicationDbContext)context, cancellationToken))
+               await DbSeeder.SeedAsync((ApplicationDbContext)context, demoPassword, cancellationToken))
            .UseSeeding((context, _) =>
-
-DbSeeder.SeedAsync((ApplicationDbContext)context).GetAwaiter().GetResult()));
+               DbSeeder.SeedAsync((ApplicationDbContext)context, demoPassword).GetAwaiter().GetResult()));
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<ApplicationDbContext>();
