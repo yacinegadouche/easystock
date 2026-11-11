@@ -62,6 +62,7 @@ else
                     <td class="text-end">@item.QuantityInStock</td>
                     <td class="text-end text-muted">@item.MinimumQuantity</td>
                     <td class="text-end text-nowrap">
+                        <a asp-controller="StockMovements" asp-action="Create" asp-route-type="Entry" asp-route-itemId="@item.Id" class="btn btn-sm btn-outline-success">+ Stock</a>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
                     </td>

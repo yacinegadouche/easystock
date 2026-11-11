@@ -1,6 +1,8 @@
 using EasyStock.Web.Data;
 using EasyStock.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using EasyStock.Web.Extensions;
+using EasyStock.Web.ViewModels;
 
 namespace EasyStock.Web.Services;
 
@@ -10,6 +12,63 @@ public class StockService(ApplicationDbContext db)
     /// Atomically changes an item's stock and adds the matching movement to the change tracker.
     /// Must be called inside a transaction; the caller saves and commits.
     /// </summary>
+    public Task<List<StockMovementListItemViewModel>> GetRecentAsync(
+    int count,
+    CancellationToken cancellationToken = default) =>
+    db.StockMovements
+        .AsNoTracking()
+        .OrderByDescending(m => m.OccurredAt)
+        .ThenByDescending(m => m.Id)
+        .Take(count)
+        .Select(StockMovementListItemViewModel.Projection)
+        .ToListAsync(cancellationToken);
+
+    public Task<List<LookupItem>> GetItemLookupsAsync(CancellationToken cancellationToken = default) =>
+        db.Items
+            .AsNoTracking()
+            .OrderBy(i => i.Name)
+            .Select(i => new LookupItem(i.Id, i.Name + " (" + i.QuantityInStock.ToString() + " in stock)"))
+            .ToListAsync(cancellationToken);
+
+    public async Task<ServiceResult> RecordManualMovementAsync(
+        MovementType type,
+        int itemId,
+        int quantity,
+        int userId,
+        string? reason,
+        string? externalReference,
+        CancellationToken cancellationToken = default)
+    {
+        if (!type.IsManual())
+        {
+            return ServiceResult.Failure("This movement type cannot be recorded manually.");
+        }
+
+        if (type == MovementType.Exit && string.IsNullOrWhiteSpace(reason))
+        {
+            return ServiceResult.Failure("A reason is required for stock exits.");
+        }
+
+        await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
+
+        var result = await RecordMovementAsync(
+            itemId,
+            type,
+            quantity,
+            userId,
+            reason.TrimToNull(),
+            externalReference.TrimToNull(),
+            cancellationToken: cancellationToken);
+
+        if (!result.Succeeded)
+        {
+            return result;
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+        return ServiceResult.Success();
+    }
     public async Task<ServiceResult> RecordMovementAsync(
         int itemId,
         MovementType type,
@@ -30,7 +89,7 @@ public class StockService(ApplicationDbContext db)
             return ServiceResult.Failure("Quantity must be greater than zero.");
         }
 
-        var delta = IsIncrease(type) ? quantity : -quantity;
+        var delta = type.IsIncrease() ? quantity : -quantity;
         var now = DateTime.UtcNow;
 
         var updatedRows = await db.Items
@@ -66,7 +125,4 @@ public class StockService(ApplicationDbContext db)
 
         return ServiceResult.Success();
     }
-
-    private static bool IsIncrease(MovementType type) =>
-        type is MovementType.Entry or MovementType.Return or MovementType.AssignmentReturn;
 }

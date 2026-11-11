@@ -1,0 +1,56 @@
+@model StockMovementFormViewModel
+@{
+    var (title, help, buttonClass) = Model.Type switch
+    {
+        MovementType.Entry => ("Stock entry", "Items received from a supplier.", "btn-success"),
+        MovementType.Exit => ("Stock exit", "Items permanently removed: lost, broken or consumed.", "btn-danger"),
+        _ => ("Return to stock", "Items coming back to stock outside an assignment, e.g. after a repair.", "btn-primary"),
+    };
+    ViewData["Title"] = title;
+}
+
+<h1 class="h3 mb-1">@title</h1>
+<p class="text-muted mb-4">@help</p>
+
+<form asp-action="Create" method="post" class="col-lg-6">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <input type="hidden" asp-for="Type" />
+
+    <div class="mb-3">
+        <label asp-for="ItemId" class="form-label"></label>
+        <select asp-for="ItemId" asp-items="Model.Items" class="form-select">
+            <option value="">-- Choose an item --</option>
+        </select>
+        <span asp-validation-for="ItemId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Quantity" class="form-label"></label>
+        <input asp-for="Quantity" class="form-control" min="1" />
+        <span asp-validation-for="Quantity" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Reason" class="form-label">
+            Reason @if (Model.Type == MovementType.Exit) { <span class="text-danger">*</span> }
+        </label>
+        <input asp-for="Reason" class="form-control" />
+        <span asp-validation-for="Reason" class="text-danger"></span>
+    </div>
+
+    @if (Model.Type == MovementType.Entry)
+    {
+        <div class="mb-3">
+            <label asp-for="ExternalReference" class="form-label"></label>
+            <input asp-for="ExternalReference" class="form-control" placeholder="Purchase order or invoice number" />
+            <span asp-validation-for="ExternalReference" class="text-danger"></span>
+        </div>
+    }
+
+    <button type="submit" class="btn @buttonClass">Record</button>
+    <a asp-action="Index" class="btn btn-link">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
