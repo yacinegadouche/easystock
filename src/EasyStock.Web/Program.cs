@@ -31,6 +31,9 @@ builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<SupplierService>();
 builder.Services.AddScoped<ItemService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<StockService>();
+builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<AssignmentService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

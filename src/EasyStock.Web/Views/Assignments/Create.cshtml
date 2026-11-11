@@ -1,0 +1,46 @@
+@model AssignmentCreateViewModel
+@{
+    ViewData["Title"] = "New assignment";
+}
+
+<h1 class="h3 mb-4">New assignment</h1>
+
+<form asp-action="Create" method="post" class="col-lg-6">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="EmployeeId" class="form-label"></label>
+        <select asp-for="EmployeeId" asp-items="Model.Employees" class="form-select">
+            <option value="">-- Choose an employee --</option>
+        </select>
+        <span asp-validation-for="EmployeeId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ItemId" class="form-label"></label>
+        <select asp-for="ItemId" asp-items="Model.Items" class="form-select">
+            <option value="">-- Choose an item --</option>
+        </select>
+        <span asp-validation-for="ItemId" class="text-danger"></span>
+        <div class="form-text">Only items currently in stock are listed.</div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Quantity" class="form-label"></label>
+        <input asp-for="Quantity" class="form-control" min="1" />
+        <span asp-validation-for="Quantity" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Assign</button>
+    <a asp-action="Index" class="btn btn-link">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
