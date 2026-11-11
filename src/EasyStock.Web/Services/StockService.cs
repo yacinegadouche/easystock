@@ -30,7 +30,7 @@ public class StockService(ApplicationDbContext db)
             return ServiceResult.Failure("Quantity must be greater than zero.");
         }
 
-        var delta = IsIncrease(type) ? quantity : -quantity;
+        var delta = type.IsIncrease() ? quantity : -quantity;
         var now = DateTime.UtcNow;
 
         var updatedRows = await db.Items
@@ -66,7 +66,4 @@ public class StockService(ApplicationDbContext db)
 
         return ServiceResult.Success();
     }
-
-    private static bool IsIncrease(MovementType type) =>
-        type is MovementType.Entry or MovementType.Return or MovementType.AssignmentReturn;
 }
