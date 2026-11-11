@@ -1,0 +1,52 @@
+@model List<AssignmentListItemViewModel>
+
+@if (Model.Count == 0)
+{
+    <p class="text-muted">No assignments.</p>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Employee</th>
+                <th class="text-end">Qty</th>
+                <th>Assigned</th>
+                <th>Returned</th>
+                <th>By</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var assignment in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@assignment.ItemName</td>
+                    <td>
+                        <a asp-controller="Employees" asp-action="Details" asp-route-id="@assignment.EmployeeId">@assignment.EmployeeName</a>
+                    </td>
+                    <td class="text-end">@assignment.Quantity</td>
+                    <td>@assignment.AssignedAt.ToDisplay()</td>
+                    <td>
+                        @if (assignment.ReturnedAt is { } returnedAt)
+                        {
+                            @returnedAt.ToDisplay()
+                        }
+                        else
+                        {
+                            <span class="badge text-bg-primary">Active</span>
+                        }
+                    </td>
+                    <td class="text-muted">@assignment.AssignedBy</td>
+                    <td class="text-end">
+                        @if (assignment.IsActive)
+                        {
+                            <a asp-controller="Assignments" asp-action="Return" asp-route-id="@assignment.Id" class="btn btn-sm btn-outline-success">Return</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
