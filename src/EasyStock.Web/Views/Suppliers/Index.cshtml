@@ -1,0 +1,48 @@
+@model List<SupplierListItemViewModel>
+@{
+    ViewData["Title"] = "Suppliers";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Suppliers</h1>
+    <a asp-action="Create" class="btn btn-primary">New supplier</a>
+</div>
+
+@if (Model.Count == 0)
+{
+    <p class="text-muted">No suppliers yet.</p>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th class="text-end">Items</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var supplier in Model)
+            {
+                <tr>
+                    <td class="fw-semibold">@supplier.Name</td>
+                    <td>
+                        @if (supplier.ContactEmail is not null)
+                        {
+                            <a href="mailto:@supplier.ContactEmail">@supplier.ContactEmail</a>
+                        }
+                    </td>
+                    <td>@supplier.Phone</td>
+                    <td class="text-end">@supplier.ItemCount</td>
+                    <td class="text-end text-nowrap">
+                        <a asp-action="Edit" asp-route-id="@supplier.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@supplier.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

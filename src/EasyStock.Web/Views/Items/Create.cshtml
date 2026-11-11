@@ -1,0 +1,16 @@
+@model ItemFormViewModel
+@{
+    ViewData["Title"] = "New item";
+}
+
+<h1 class="h3 mb-4">New item</h1>
+
+<form asp-action="Create" method="post" class="col-lg-8">
+    <partial name="_ItemForm" model="Model" />
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-link">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

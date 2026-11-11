@@ -14,7 +14,10 @@ public class Item : AuditableEntity
     public int QuantityInStock { get; set; }
     public int MinimumQuantity { get; set; }
 
-    public bool IsLowStock => QuantityInStock <= MinimumQuantity;
+    public bool IsLowStock => IsLow(QuantityInStock, MinimumQuantity);
+
+    public static bool IsLow(int quantityInStock, int minimumQuantity) =>
+        quantityInStock <= minimumQuantity;
 
     public ICollection<StockMovement> Movements { get; set; } = new List<StockMovement>();
     public ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();

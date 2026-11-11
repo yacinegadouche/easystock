@@ -1,0 +1,55 @@
+@model ItemFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<input type="hidden" asp-for="Id" />
+
+<div class="mb-3">
+    <label asp-for="Name" class="form-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Description" class="form-label"></label>
+    <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="CategoryId" class="form-label"></label>
+        <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select">
+            <option value="">-- Choose a category --</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="SupplierId" class="form-label"></label>
+        <select asp-for="SupplierId" asp-items="Model.Suppliers" class="form-select">
+            <option value="">-- None --</option>
+        </select>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="MinimumQuantity" class="form-label"></label>
+        <input asp-for="MinimumQuantity" class="form-control" min="0" />
+        <span asp-validation-for="MinimumQuantity" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        @if (Model.Id == 0)
+        {
+            <label asp-for="InitialQuantity" class="form-label"></label>
+            <input asp-for="InitialQuantity" class="form-control" min="0" />
+            <span asp-validation-for="InitialQuantity" class="text-danger"></span>
+            <div class="form-text">Recorded as an "Initial stock" entry movement.</div>
+        }
+        else
+        {
+            <label asp-for="QuantityInStock" class="form-label"></label>
+            <input asp-for="QuantityInStock" class="form-control" readonly disabled />
+            <div class="form-text">Stock changes only through stock movements.</div>
+        }
+    </div>
+</div>
