@@ -16,6 +16,7 @@ public static class DbSeeder
         if (!string.IsNullOrWhiteSpace(demoPassword))
         {
             await SeedUsersAsync(db, demoPassword, cancellationToken);
+            await SeedInitialStockMovementsAsync(db, cancellationToken);
         }
     }
 
@@ -91,6 +92,39 @@ public static class DbSeeder
             new Employee { FirstName = "Karim", LastName = "Haddad", Email = "karim.haddad@easystock.example", Department = "IT" },
             new Employee { FirstName = "Émilie", LastName = "Bouchard", Email = "emilie.bouchard@easystock.example", Department = "Marketing" },
             new Employee { FirstName = "Thomas", LastName = "Lavoie", Email = "thomas.lavoie@easystock.example", Department = "Operations" });
+
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
+    private static async Task SeedInitialStockMovementsAsync(
+        ApplicationDbContext db,
+        CancellationToken cancellationToken)
+    {
+        if (await db.StockMovements.AnyAsync(cancellationToken))
+        {
+            return;
+        }
+
+        var admin = await db.Users.SingleOrDefaultAsync(u => u.Username == "admin", cancellationToken);
+
+        if (admin is null)
+        {
+            return;
+        }
+
+        var openingDate = DateTime.UtcNow.AddDays(-30);
+        var items = await db.Items.Where(i => i.QuantityInStock > 0).ToListAsync(cancellationToken);
+
+        db.StockMovements.AddRange(items.Select(item => new StockMovement
+        {
+            ItemId = item.Id,
+            Type = MovementType.Entry,
+            Quantity = item.QuantityInStock,
+            QuantityAfter = item.QuantityInStock,
+            Reason = "Initial stock",
+            OccurredAt = openingDate,
+            UserId = admin.Id,
+        }));
 
         await db.SaveChangesAsync(cancellationToken);
     }
