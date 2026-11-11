@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject IAuthorizationService AuthorizationService
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -32,6 +34,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Suppliers" asp-action="Index">Suppliers</a>
                         </li>
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Policies.ManageUsers)).Succeeded)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Users" asp-action="Index">Users</a>
+                            </li>
+                        }
                     </ul>
                     @if (User.Identity?.IsAuthenticated == true)
                     {
