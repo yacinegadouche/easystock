@@ -1,0 +1,27 @@
+@model IPagedList
+@{
+    IDictionary<string, string> RouteFor(int page)
+    {
+        var values = Context.Request.Query.ToDictionary(q => q.Key, q => q.Value.ToString());
+        values["page"] = page.ToString();
+        return values;
+    }
+}
+
+<div class="d-flex justify-content-between align-items-center">
+    <span class="text-muted small">
+        @Model.TotalCount result(s)@(Model.TotalPages > 1 ? $" · page {Model.Page} of {Model.TotalPages}" : "")
+    </span>
+
+    @if (Model.TotalPages > 1)
+    {
+        <ul class="pagination mb-0">
+            <li class="page-item @(Model.Page <= 1 ? "disabled" : null)">
+                <a class="page-link" asp-all-route-data="RouteFor(Model.Page - 1)">Previous</a>
+            </li>
+            <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : null)">
+                <a class="page-link" asp-all-route-data="RouteFor(Model.Page + 1)">Next</a>
+            </li>
+        </ul>
+    }
+</div>
