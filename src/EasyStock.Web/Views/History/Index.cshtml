@@ -1,0 +1,45 @@
+@model MovementHistoryViewModel
+@{
+    ViewData["Title"] = "History";
+}
+
+<h1 class="h3 mb-3">History</h1>
+<partial name="_HistoryTabs" />
+
+<form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-2">
+        <label for="from" class="form-label small">From</label>
+        <input type="date" id="from" name="from" value="@Model.Filter.From?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <label for="to" class="form-label small">To</label>
+        <input type="date" id="to" name="to" value="@Model.Filter.To?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label for="itemId" class="form-label small">Item</label>
+        <select id="itemId" name="itemId" asp-items="Model.Items" class="form-select">
+            <option value="">All items</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label for="type" class="form-label small">Type</label>
+        <select id="type" name="type" asp-items="Model.Types" class="form-select">
+            <option value="">All types</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label for="userId" class="form-label small">User</label>
+        <select id="userId" name="userId" asp-items="Model.Users" class="form-select">
+            <option value="">All users</option>
+        </select>
+    </div>
+    <div class="col-md-1 d-flex flex-column gap-1">
+        <button type="submit" class="btn btn-outline-primary">Filter</button>
+        <a asp-action="Index" class="btn btn-link btn-sm">Reset</a>
+    </div>
+</form>
+
+<div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+<partial name="_MovementTable" model="Model.Movements.Items" />
+<partial name="_Pager" model="Model.Movements" />

@@ -1,0 +1,12 @@
+@{
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+        <a class="nav-link @(action == "Index" ? "active" : null)" asp-action="Index">All movements</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(action == "Replenishments" ? "active" : null)" asp-action="Replenishments">Replenishments</a>
+    </li>
+</ul>
