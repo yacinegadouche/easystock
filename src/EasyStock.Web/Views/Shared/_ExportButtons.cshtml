@@ -1,0 +1,18 @@
+@model string
+@{
+    IDictionary<string, string> RouteFor(ReportFormat format)
+    {
+        var values = Context.Request.Query
+            .Where(q => q.Key != "page")
+            .ToDictionary(q => q.Key, q => q.Value.ToString());
+        values["format"] = format.ToString();
+        return values;
+    }
+}
+
+<div class="btn-group btn-group-sm" role="group" aria-label="Export">
+    @foreach (var format in Enum.GetValues<ReportFormat>())
+    {
+        <a class="btn btn-outline-secondary" asp-controller="Reports" asp-action="@Model" asp-all-route-data="RouteFor(format)">@format</a>
+    }
+</div>
