@@ -7,10 +7,11 @@ public static class DateTimeExtensions
     private static readonly TimeZoneInfo DisplayTimeZone =
         TimeZoneInfo.FindSystemTimeZoneById("America/Toronto");
 
+    public static DateTime ToDisplayTimeZone(this DateTime utcDateTime) =>
+        TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utcDateTime, DateTimeKind.Utc), DisplayTimeZone);
+
     public static string ToDisplay(this DateTime utcDateTime) =>
-        TimeZoneInfo
-            .ConvertTimeFromUtc(DateTime.SpecifyKind(utcDateTime, DateTimeKind.Utc), DisplayTimeZone)
-            .ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+        utcDateTime.ToDisplayTimeZone().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
 
     public static DateTime StartOfDayUtc(this DateOnly localDate) =>
         TimeZoneInfo.ConvertTimeToUtc(localDate.ToDateTime(TimeOnly.MinValue), DisplayTimeZone);
