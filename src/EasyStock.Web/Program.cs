@@ -6,8 +6,11 @@ using EasyStock.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using EasyStock.Web.Reports;
 
 var builder = WebApplication.CreateBuilder(args);
+
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -35,6 +38,10 @@ builder.Services.AddScoped<StockService>();
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<AssignmentService>();
 builder.Services.AddScoped<HistoryService>();
+builder.Services.AddScoped<ReportService>();
+builder.Services.AddSingleton<IReportExporter, CsvReportExporter>();
+builder.Services.AddSingleton<IReportExporter, ExcelReportExporter>();
+builder.Services.AddSingleton<IReportExporter, PdfReportExporter>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

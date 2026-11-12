@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<h1 class="h3 mb-4">Reports</h1>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5 card-title">Inventory</h2>
+                <p class="card-text text-muted">Every item with its category, supplier, stock level and status.</p>
+                <partial name="_ExportButtons" model='"Inventory"' />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5 card-title">Low stock</h2>
+                <p class="card-text text-muted">Items at or below their minimum, with the shortfall and supplier contact.</p>
+                <partial name="_ExportButtons" model='"LowStock"' />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5 card-title">Stock movements</h2>
+                <p class="card-text text-muted">Filter the history first, then export exactly what you see.</p>
+                <a asp-controller="History" asp-action="Index" class="btn btn-sm btn-outline-primary">Open history</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5 card-title">Replenishments</h2>
+                <p class="card-text text-muted">Entries by period and supplier, with the total units received.</p>
+                <a asp-controller="History" asp-action="Replenishments" class="btn btn-sm btn-outline-primary">Open replenishments</a>
+            </div>
+        </div>
+    </div>
+</div>
