@@ -11,4 +11,7 @@ public static class DateTimeExtensions
         TimeZoneInfo
             .ConvertTimeFromUtc(DateTime.SpecifyKind(utcDateTime, DateTimeKind.Utc), DisplayTimeZone)
             .ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+
+    public static DateTime StartOfDayUtc(this DateOnly localDate) =>
+        TimeZoneInfo.ConvertTimeToUtc(localDate.ToDateTime(TimeOnly.MinValue), DisplayTimeZone);
 }
