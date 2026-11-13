@@ -1,6 +1,7 @@
 using System.Net;
 using System.Threading.Channels;
 using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EasyStock.Web.Notifications;
 
@@ -18,6 +19,9 @@ public class LowStockAlertQueue
         new BoundedChannelOptions(capacity: 100) { FullMode = BoundedChannelFullMode.DropOldest });
 
     public void Enqueue(LowStockAlert alert) => channel.Writer.TryWrite(alert);
+
+    public bool TryDequeue([NotNullWhen(true)] out LowStockAlert? alert) =>
+        channel.Reader.TryRead(out alert);
 
     public IAsyncEnumerable<LowStockAlert> ReadAllAsync(CancellationToken cancellationToken) =>
         channel.Reader.ReadAllAsync(cancellationToken);

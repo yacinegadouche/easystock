@@ -9,10 +9,6 @@ namespace EasyStock.Web.Services;
 
 public class StockService(ApplicationDbContext db, LowStockAlertQueue alertQueue)
 {
-    /// <summary>
-    /// Atomically changes an item's stock and adds the matching movement to the change tracker.
-    /// Must be called inside a transaction; the caller saves and commits.
-    /// </summary>
     private readonly List<LowStockAlert> pendingAlerts = [];
 
     public Task<List<StockMovementListItemViewModel>> GetRecentAsync(
@@ -91,6 +87,10 @@ public class StockService(ApplicationDbContext db, LowStockAlertQueue alertQueue
         return result;
     }
 
+    /// <summary>
+    /// Atomically changes an item's stock and adds the matching movement to the change tracker.
+    /// Must be called inside a transaction; the caller saves and commits.
+    /// </summary>
     public async Task<ServiceResult> RecordMovementAsync(
         int itemId,
         MovementType type,

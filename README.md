@@ -44,6 +44,18 @@ In production, configure SMTP with environment variables, for example:
 `Email__Enabled=true`, `Email__Host=smtp.example.com`, `Email__Port=587`, `Email__Security=StartTls`,
 `Email__Username=...`, `Email__Password=...`, `Email__SenderEmail=...`, `Email__RecipientEmail=...`.
 
+## Tests
+
+```bash
+dotnet test
+```
+
+Docker must be running: integration tests start a disposable PostgreSQL 17 container with [Testcontainers](https://dotnet.testcontainers.org), so they run against the same database engine as production. Each test gets its own fresh database.
+
+- **Unit tests**: domain rules, CSV export (escaping, BOM, formula injection), time zone conversion
+- **Integration tests**: stock movements, assignments (including transaction rollback and concurrent assignment of the last unit), authentication, user and category rules
+- **Web tests**: anonymous redirect to login, public health endpoint
+
 ## Tech stack
 
 - ASP.NET Core MVC (.NET 10)
