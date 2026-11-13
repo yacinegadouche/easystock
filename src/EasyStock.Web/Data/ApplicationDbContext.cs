@@ -2,10 +2,12 @@ using EasyStock.Web.Models;
 
 using Microsoft.EntityFrameworkCore;
 
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+
 namespace EasyStock.Web.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : DbContext(options)
+    : DbContext(options), IDataProtectionKeyContext
 {
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Supplier> Suppliers => Set<Supplier>();
@@ -14,6 +16,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<User> Users => Set<User>();
     public DbSet<Assignment> Assignments => Set<Assignment>();
     public DbSet<StockMovement> StockMovements => Set<StockMovement>();
+    public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
