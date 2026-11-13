@@ -35,6 +35,15 @@ All demo accounts use the password set in `Seed:DemoPassword`.
 
 Health check: `GET /health`
 
+### Emails in development
+
+`docker compose up -d` also starts [Mailpit](https://mailpit.axllent.org), a local SMTP server that catches every email.
+Low stock alerts are visible at http://localhost:8025. No real email is ever sent in development.
+
+In production, configure SMTP with environment variables, for example:
+`Email__Enabled=true`, `Email__Host=smtp.example.com`, `Email__Port=587`, `Email__Security=StartTls`,
+`Email__Username=...`, `Email__Password=...`, `Email__SenderEmail=...`, `Email__RecipientEmail=...`.
+
 ## Tech stack
 
 - ASP.NET Core MVC (.NET 10)

@@ -3,15 +3,18 @@ using EasyStock.Web.Models;
 using Microsoft.EntityFrameworkCore;
 using EasyStock.Web.Extensions;
 using EasyStock.Web.ViewModels;
+using EasyStock.Web.Notifications;
 
 namespace EasyStock.Web.Services;
 
-public class StockService(ApplicationDbContext db)
+public class StockService(ApplicationDbContext db, LowStockAlertQueue alertQueue)
 {
     /// <summary>
     /// Atomically changes an item's stock and adds the matching movement to the change tracker.
     /// Must be called inside a transaction; the caller saves and commits.
     /// </summary>
+    private readonly List<LowStockAlert> pendingAlerts = [];
+
     public Task<List<StockMovementListItemViewModel>> GetRecentAsync(
     int count,
     CancellationToken cancellationToken = default) =>
@@ -72,14 +75,22 @@ public class StockService(ApplicationDbContext db)
         if (!result.Succeeded)
         {
             db.ChangeTracker.Clear();
+            pendingAlerts.Clear();
             return result;
         }
 
         await db.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
+
+        foreach (var alert in pendingAlerts)
+        {
+            alertQueue.Enqueue(alert);
+        }
+
+        pendingAlerts.Clear();
         return result;
     }
-    
+
     public async Task<ServiceResult> RecordMovementAsync(
         int itemId,
         MovementType type,
@@ -116,17 +127,37 @@ public class StockService(ApplicationDbContext db)
             return ServiceResult.Failure(itemExists ? "Not enough stock available." : "Item not found.");
         }
 
-        var quantityAfter = await db.Items
+        var stock = await db.Items
             .Where(i => i.Id == itemId)
-            .Select(i => i.QuantityInStock)
+            .Select(i => new
+            {
+                i.Name,
+                i.QuantityInStock,
+                i.MinimumQuantity,
+                SupplierName = i.Supplier != null ? i.Supplier.Name : null,
+                SupplierEmail = i.Supplier != null ? i.Supplier.ContactEmail : null,
+            })
             .SingleAsync(cancellationToken);
+
+        var quantityBefore = stock.QuantityInStock - delta;
+
+        if (!Item.IsLow(quantityBefore, stock.MinimumQuantity) && Item.IsLow(stock.QuantityInStock, stock.MinimumQuantity))
+        {
+            pendingAlerts.Add(new LowStockAlert(
+                itemId,
+                stock.Name,
+                stock.QuantityInStock,
+                stock.MinimumQuantity,
+                stock.SupplierName,
+                stock.SupplierEmail));
+        }
 
         db.StockMovements.Add(new StockMovement
         {
             ItemId = itemId,
             Type = type,
             Quantity = quantity,
-            QuantityAfter = quantityAfter,
+            QuantityAfter = stock.QuantityInStock,
             Reason = reason,
             ExternalReference = externalReference,
             OccurredAt = now,
