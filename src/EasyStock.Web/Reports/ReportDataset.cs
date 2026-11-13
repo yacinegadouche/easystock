@@ -1,4 +1,5 @@
 using System.Globalization;
+
 using EasyStock.Web.Extensions;
 
 namespace EasyStock.Web.Reports;

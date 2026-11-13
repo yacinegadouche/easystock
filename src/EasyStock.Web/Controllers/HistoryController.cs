@@ -2,6 +2,7 @@ using EasyStock.Web.Authorization;
 using EasyStock.Web.Models;
 using EasyStock.Web.Services;
 using EasyStock.Web.ViewModels;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;

@@ -4,6 +4,7 @@ using EasyStock.Web.Models;
 using EasyStock.Web.Notifications;
 using EasyStock.Web.Services;
 using EasyStock.Web.ViewModels;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyStock.Tests.Integration;

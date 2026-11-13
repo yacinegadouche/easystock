@@ -1,5 +1,6 @@
 using EasyStock.Web.Data;
 using EasyStock.Web.Models;
+
 using Microsoft.AspNetCore.Identity;
 
 namespace EasyStock.Tests.Infrastructure;

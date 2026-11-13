@@ -1,13 +1,14 @@
-using EasyStock.Web.Data;
-using Microsoft.EntityFrameworkCore;
 using EasyStock.Web.Authorization;
+using EasyStock.Web.Data;
 using EasyStock.Web.Models;
+using EasyStock.Web.Notifications;
+using EasyStock.Web.Reports;
 using EasyStock.Web.Services;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using EasyStock.Web.Reports;
-using EasyStock.Web.Notifications;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

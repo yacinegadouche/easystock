@@ -1,4 +1,5 @@
 using EasyStock.Web.Models;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

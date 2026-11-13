@@ -3,6 +3,7 @@ using EasyStock.Web.Extensions;
 using EasyStock.Web.Reports;
 using EasyStock.Web.Services;
 using EasyStock.Web.ViewModels;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

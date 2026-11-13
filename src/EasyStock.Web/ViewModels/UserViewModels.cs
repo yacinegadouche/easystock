@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+
 using EasyStock.Web.Models;
 
 namespace EasyStock.Web.ViewModels;

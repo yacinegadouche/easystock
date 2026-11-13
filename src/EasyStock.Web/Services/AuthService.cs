@@ -1,6 +1,8 @@
 using System.Security.Claims;
+
 using EasyStock.Web.Data;
 using EasyStock.Web.Models;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

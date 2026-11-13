@@ -1,7 +1,9 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+
 using EasyStock.Web.Models;
+
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EasyStock.Web.Controllers;
 

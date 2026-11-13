@@ -1,4 +1,5 @@
 using EasyStock.Web.Data;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyStock.Tests.Infrastructure;

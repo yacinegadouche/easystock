@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+
 using EasyStock.Web.Models;
+
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 

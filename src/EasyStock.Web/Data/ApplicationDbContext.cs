@@ -1,4 +1,5 @@
 using EasyStock.Web.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyStock.Web.Data;

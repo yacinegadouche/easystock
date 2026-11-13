@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+
 using EasyStock.Web.Models;
+
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EasyStock.Web.ViewModels;

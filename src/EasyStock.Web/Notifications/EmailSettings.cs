@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+
 using MailKit.Security;
 
 namespace EasyStock.Web.Notifications;

@@ -1,4 +1,5 @@
 using ClosedXML.Excel;
+
 using EasyStock.Web.Extensions;
 
 namespace EasyStock.Web.Reports;
