@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using EasyStock.Web.Reports;
+using EasyStock.Web.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,13 @@ builder.Services.AddScoped<ReportService>();
 builder.Services.AddSingleton<IReportExporter, CsvReportExporter>();
 builder.Services.AddSingleton<IReportExporter, ExcelReportExporter>();
 builder.Services.AddSingleton<IReportExporter, PdfReportExporter>();
+builder.Services.AddOptions<EmailSettings>()
+    .Bind(builder.Configuration.GetSection(EmailSettings.SectionName))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>();
+builder.Services.AddSingleton<LowStockAlertQueue>();
+builder.Services.AddHostedService<LowStockNotificationWorker>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
