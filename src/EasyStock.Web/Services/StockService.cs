@@ -49,26 +49,37 @@ public class StockService(ApplicationDbContext db)
             return ServiceResult.Failure("A reason is required for stock exits.");
         }
 
+        return await ExecuteInTransactionAsync(
+            token => RecordMovementAsync(
+                itemId,
+                type,
+                quantity,
+                userId,
+                reason.TrimToNull(),
+                externalReference.TrimToNull(),
+                cancellationToken: token),
+            cancellationToken);
+    }
+
+    public async Task<ServiceResult> ExecuteInTransactionAsync(
+        Func<CancellationToken, Task<ServiceResult>> work,
+        CancellationToken cancellationToken = default)
+    {
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
 
-        var result = await RecordMovementAsync(
-            itemId,
-            type,
-            quantity,
-            userId,
-            reason.TrimToNull(),
-            externalReference.TrimToNull(),
-            cancellationToken: cancellationToken);
+        var result = await work(cancellationToken);
 
         if (!result.Succeeded)
         {
+            db.ChangeTracker.Clear();
             return result;
         }
 
         await db.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
-        return ServiceResult.Success();
+        return result;
     }
+    
     public async Task<ServiceResult> RecordMovementAsync(
         int itemId,
         MovementType type,

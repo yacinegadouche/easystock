@@ -72,39 +72,30 @@ public class AssignmentService(ApplicationDbContext db, StockService stockServic
             return ServiceResult.Failure("The selected item does not exist.");
         }
 
-        await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
-
-        var assignment = new Assignment
+        return await stockService.ExecuteInTransactionAsync(async token =>
         {
-            ItemId = model.ItemId!.Value,
-            EmployeeId = employee.Id,
-            Quantity = model.Quantity,
-            AssignedAt = DateTime.UtcNow,
-            Notes = model.Notes.TrimToNull(),
-            AssignedByUserId = userId,
-        };
+            var assignment = new Assignment
+            {
+                ItemId = model.ItemId!.Value,
+                EmployeeId = employee.Id,
+                Quantity = model.Quantity,
+                AssignedAt = DateTime.UtcNow,
+                Notes = model.Notes.TrimToNull(),
+                AssignedByUserId = userId,
+            };
 
-        db.Assignments.Add(assignment);
-        await db.SaveChangesAsync(cancellationToken);
+            db.Assignments.Add(assignment);
+            await db.SaveChangesAsync(token);
 
-        var stockResult = await stockService.RecordMovementAsync(
-            assignment.ItemId,
-            MovementType.Assignment,
-            assignment.Quantity,
-            userId,
-            reason: $"Assigned to {employee.FullName}",
-            assignmentId: assignment.Id,
-            cancellationToken: cancellationToken);
-
-        if (!stockResult.Succeeded)
-        {
-            db.ChangeTracker.Clear();
-            return stockResult;
-        }
-
-        await db.SaveChangesAsync(cancellationToken);
-        await transaction.CommitAsync(cancellationToken);
-        return ServiceResult.Success();
+            return await stockService.RecordMovementAsync(
+                assignment.ItemId,
+                MovementType.Assignment,
+                assignment.Quantity,
+                userId,
+                reason: $"Assigned to {employee.FullName}",
+                assignmentId: assignment.Id,
+                cancellationToken: token);
+        }, cancellationToken);
     }
 
     public async Task<ServiceResult> ReturnAsync(int id, int userId, CancellationToken cancellationToken = default)
@@ -125,38 +116,30 @@ public class AssignmentService(ApplicationDbContext db, StockService stockServic
             return ServiceResult.Failure("Assignment not found.");
         }
 
-        await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
-
-        var now = DateTime.UtcNow;
-
-        var updatedRows = await db.Assignments
-            .Where(a => a.Id == id && a.ReturnedAt == null)
-            .ExecuteUpdateAsync(setters => setters
-                .SetProperty(a => a.ReturnedAt, (DateTime?)now)
-                .SetProperty(a => a.UpdatedAt, now),
-                cancellationToken);
-
-        if (updatedRows == 0)
+        return await stockService.ExecuteInTransactionAsync(async token =>
         {
-            return ServiceResult.Failure("This assignment has already been returned.");
-        }
+            var now = DateTime.UtcNow;
 
-        var stockResult = await stockService.RecordMovementAsync(
-            assignment.ItemId,
-            MovementType.AssignmentReturn,
-            assignment.Quantity,
-            userId,
-            reason: $"Returned by {assignment.EmployeeName}",
-            assignmentId: id,
-            cancellationToken: cancellationToken);
+            var updatedRows = await db.Assignments
+                .Where(a => a.Id == id && a.ReturnedAt == null)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(a => a.ReturnedAt, (DateTime?)now)
+                    .SetProperty(a => a.UpdatedAt, now),
+                    token);
 
-        if (!stockResult.Succeeded)
-        {
-            return stockResult;
-        }
+            if (updatedRows == 0)
+            {
+                return ServiceResult.Failure("This assignment has already been returned.");
+            }
 
-        await db.SaveChangesAsync(cancellationToken);
-        await transaction.CommitAsync(cancellationToken);
-        return ServiceResult.Success();
+            return await stockService.RecordMovementAsync(
+                assignment.ItemId,
+                MovementType.AssignmentReturn,
+                assignment.Quantity,
+                userId,
+                reason: $"Returned by {assignment.EmployeeName}",
+                assignmentId: id,
+                cancellationToken: token);
+        }, cancellationToken);
     }
 }
