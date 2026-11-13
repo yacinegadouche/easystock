@@ -1,6 +1,10 @@
 # EasyStock
 [![CI](https://github.com/yacinegadouche/easystock/actions/workflows/ci.yml/badge.svg)](https://github.com/yacinegadouche/easystock/actions/workflows/ci.yml)
 
+**Live demo:** https://easystock-6pmc.onrender.com
+Sign in as `manager` or `operator` with the password `Demo123!`.
+The demo runs on a free tier and sleeps when idle: the first visit can take about a minute to wake up.
+
 IT asset and inventory management web application built with ASP.NET Core MVC (.NET 10) and PostgreSQL.
 
 > Re-implementation of the EasyStock team project from the INM5151 course (Software Engineering Project) at UQAM, rebuilt from scratch with PostgreSQL instead of SQL Server.
