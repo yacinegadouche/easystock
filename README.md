@@ -1,4 +1,5 @@
 # EasyStock
+[![CI](https://github.com/yacinegadouche/easystock/actions/workflows/ci.yml/badge.svg)](https://github.com/yacinegadouche/easystock/actions/workflows/ci.yml)
 
 IT asset and inventory management web application built with ASP.NET Core MVC (.NET 10) and PostgreSQL.
 
