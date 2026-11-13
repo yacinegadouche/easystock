@@ -1,7 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Channels;
+
 using Microsoft.Extensions.Options;
-using System.Diagnostics.CodeAnalysis;
 
 namespace EasyStock.Web.Notifications;
 

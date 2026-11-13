@@ -1,6 +1,9 @@
 using EasyStock.Web.Data;
+
 using Microsoft.EntityFrameworkCore;
+
 using Npgsql;
+
 using Testcontainers.PostgreSql;
 
 namespace EasyStock.Tests.Infrastructure;

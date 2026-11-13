@@ -1,8 +1,9 @@
 using EasyStock.Web.Data;
+using EasyStock.Web.Extensions;
 using EasyStock.Web.Models;
 using EasyStock.Web.ViewModels;
+
 using Microsoft.EntityFrameworkCore;
-using EasyStock.Web.Extensions;
 
 namespace EasyStock.Web.Services;
 

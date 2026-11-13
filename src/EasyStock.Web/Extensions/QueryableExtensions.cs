@@ -1,4 +1,5 @@
 using EasyStock.Web.ViewModels;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyStock.Web.Extensions;

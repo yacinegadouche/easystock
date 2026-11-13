@@ -2,6 +2,7 @@ using EasyStock.Tests.Infrastructure;
 using EasyStock.Web.Models;
 using EasyStock.Web.Services;
 using EasyStock.Web.ViewModels;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyStock.Tests.Integration;

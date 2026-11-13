@@ -1,8 +1,10 @@
+using MailKit;
 using MailKit.Net.Smtp;
+
 using Microsoft.Extensions.Options;
+
 using MimeKit;
 using MimeKit.Text;
-using MailKit;
 
 namespace EasyStock.Web.Notifications;
 

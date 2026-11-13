@@ -1,6 +1,7 @@
 using EasyStock.Web.Models;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EasyStock.Web.Data;
 

@@ -1,4 +1,5 @@
 using System.Text;
+
 using EasyStock.Web.Reports;
 
 namespace EasyStock.Tests.Unit;

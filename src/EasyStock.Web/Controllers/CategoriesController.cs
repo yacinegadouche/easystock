@@ -1,5 +1,6 @@
 using EasyStock.Web.Services;
 using EasyStock.Web.ViewModels;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyStock.Web.Controllers;
