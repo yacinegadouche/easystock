@@ -45,6 +45,17 @@ In production, configure SMTP with environment variables, for example:
 `Email__Enabled=true`, `Email__Host=smtp.example.com`, `Email__Port=587`, `Email__Security=StartTls`,
 `Email__Username=...`, `Email__Password=...`, `Email__SenderEmail=...`, `Email__RecipientEmail=...`.
 
+### Run the whole stack with Docker
+
+```bash
+cp .env.example .env            # then set POSTGRES_PASSWORD and DEMO_PASSWORD
+docker compose --profile app up -d --build
+```
+
+The app runs at http://localhost:8080 in the `Production` environment (migrations and demo data are applied on startup), and emails are caught by Mailpit at http://localhost:8025.
+
+The image is a multi-stage build (.NET SDK to build, ASP.NET runtime to run), runs as a non-root user, and stores data protection keys in PostgreSQL so sign-ins survive restarts.
+
 ## Tests
 
 ```bash
